@@ -17,7 +17,7 @@ module ActiveJob
       end
 
       def execute(job_data) #:nodoc:
-        job = deserialize(job_data)
+        job = instantiate_from_job_data(job_data)
         job.perform_now
       end
     end

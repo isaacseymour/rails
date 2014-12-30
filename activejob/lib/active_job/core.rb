@@ -21,11 +21,9 @@ module ActiveJob
     # helpers for de/serialization and creation of job instances.
     module ClassMethods
       # Creates a new job instance from a hash created with +serialize+
-      def deserialize(job_data)
-        job                      = job_data['job_class'].constantize.new
-        job.job_id               = job_data['job_id']
-        job.queue_name           = job_data['queue_name']
-        job.serialized_arguments = job_data['arguments']
+      def instantiate_from_job_data(job_data)
+        job = job_data['job_class'].constantize.new
+        job.deserialize(job_data)
         job
       end
 
@@ -67,6 +65,12 @@ module ActiveJob
         'queue_name' => queue_name,
         'arguments'  => serialize_arguments(arguments)
       }
+    end
+
+    def deserialize(job_data)
+      self.job_id               = job_data['job_id']
+      self.queue_name           = job_data['queue_name']
+      self.serialized_arguments = job_data['arguments']
     end
 
     private
